@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!-- $Id: pom.xml 642118 2008-03-28 08:04:16Z reinhard $ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  <name>ims-manager</name>
+  <groupId>com.spark</groupId>
+  <artifactId>ims-manager</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
+
+  <modules>
+    <module>modules/common/ims-de-manager-common</module>
+    <module>modules/ims-manager/ims-de-manager</module>
+    <module>modules/ims-manager/ims-de-manager-api</module>
+    <module>modules/ims-manager/ims-de-manager-model</module>
+    <module>web/ims-manager-web</module>
+  </modules>
+
+  <properties>
+    <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+    <ims-framework.version>1.0.1-SNAPSHOT</ims-framework.version>
+    <ims-manager.version>1.0.1-SNAPSHOT</ims-manager.version>
+    <maven.war.plugin>2.6</maven.war.plugin>
+    <java.version>1.8</java.version>
+    <file.encoding>UTF-8</file.encoding>
+    <maven.compiler.encoding>${file.encoding}</maven.compiler.encoding>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <!--自己的framework-->
+      <dependency>
+        <groupId>com.spark</groupId>
+        <artifactId>ims-framework</artifactId>
+        <version>${ims-framework.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!--进销存系统-->
+      <dependency>
+        <groupId>com.spark</groupId>
+        <artifactId>ims-de-manager</artifactId>
+        <version>${ims-manager.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.spark</groupId>
+        <artifactId>ims-de-manager-api</artifactId>
+        <version>${ims-manager.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.spark</groupId>
+        <artifactId>ims-de-manager-model</artifactId>
+        <version>${ims-manager.version}</version>
+      </dependency>
+
+      <!--公共模块-->
+      <dependency>
+        <groupId>com.spark</groupId>
+        <artifactId>ims-de-manager-common</artifactId>
+        <version>${ims-manager.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+
+  <build>
+    <finalName>ims-manager</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+    </resources>
+    <filters>
+      <filter>${project.parent.relativePath}/../config/common.properties</filter>
+      <filter>${project.parent.relativePath}/../config/${config.file}.properties</filter>
+    </filters>
+  </build>
+
+  <!-- 多环境配置，pro是生产环境，默认使用dev开发环境，使用非默认环境请加-Denv=pro类似这样 -->
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>dev</value>
+        </property>
+      </activation>
+      <properties>
+        <config.file>dev</config.file>
+        <!--<spring.profiles.active>dev</spring.profiles.active>-->
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>env</name>
+          <value>test</value>
+        </property>
+      </activation>
+      <properties>
+        <config.file>test</config.file>
+        <!--<spring.profiles.active>test</spring.profiles.active>-->
+      </properties>
+    </profile>
+    <profile>
+      <id>sit</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>sit</value>
+        </property>
+      </activation>
+      <properties>
+        <config.file>sit</config.file>
+        <!--<spring.profiles.active>sit</spring.profiles.active>-->
+      </properties>
+    </profile>
+    <profile>
+      <id>local</id>
+      <activation>
+        <property>
+          <name>env</name>
+          <value>local</value>
+        </property>
+      </activation>
+      <properties>
+        <config.file>local</config.file>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>${maven.antrun.plugin.version}</version>
+            <executions>
+              <execution>
+                <phase>compile</phase>
+                <configuration>
+                  <tasks>
+                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+                    <copy file="${project.parent.relativePath}/../docs/application.properties" tofile="${user.home}/application.properties" overwrite="true" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+                <version>1.0b3</version>
+                <exclusions>
+                  <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                  </exclusion>
+                </exclusions>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
