@@ -32,6 +32,10 @@
             <groupId>com.spark</groupId>
             <artifactId>ims-de-manager</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.spark</groupId>
+            <artifactId>ims-manager-user</artifactId>
+        </dependency>
 
         <!--spring-->
         <dependency>

@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="userRedisRealm" class="com.evada.spark.ims.auth.realm.RedisUserRealm">
+    <bean id="userRedisRealm" class="com.spark.ims.user.realm.RedisUserRealm">
         <property name="cachingEnabled" value="true"></property>
         <property name="authorizationCachingEnabled" value="true"></property>
         <property name="authenticationCachingEnabled" value="true"></property>
@@ -19,14 +19,14 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/#/login"/>
         <property name="successUrl" value="/"/>
-      <!--  <property name="filters">
+        <property name="filters">
             <map>
                 <entry key="tokenCheckFilter">
-                    <bean class="com.spark.ims.authfilter.TokenCheckerFilter" />
+                    <bean class="com.spark.ims.user.authfilter.TokenCheckerFilter" />
                 </entry>
             </map>
 
-        </property>-->
+        </property>
         <property name="filterChainDefinitions">
             <value>
                 /index.html = anon
@@ -42,7 +42,7 @@
                 / = anon
                 /assets/** = anon
                 /fonts/** = anon
-                <!--/** = tokenCheckFilter-->
+                /** = tokenCheckFilter
             </value>
             <!--,sessionControlFilter-->
         </property>

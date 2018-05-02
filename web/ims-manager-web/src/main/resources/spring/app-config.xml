@@ -6,5 +6,5 @@
 
     <import resource="spring-tx.xml"/>
     <import resource="spring-beans.xml"/>
-    <!--<import resource="spring-shiro-redis.xml"></import>-->
+    <import resource="spring-shiro-redis.xml"></import>
 </beans>

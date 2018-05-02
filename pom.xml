@@ -47,8 +47,17 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-
+    <user.version>1.0.1-SNAPSHOT</user.version>
   </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <dependencyManagement>
     <dependencies>
       <!--自己的framework-->
@@ -82,7 +91,18 @@
         <artifactId>ims-de-manager-common</artifactId>
         <version>${ims-manager.version}</version>
       </dependency>
+
+      <!--用户模块-->
+      <dependency>
+        <groupId>com.spark</groupId>
+        <artifactId>user</artifactId>
+        <version>${user.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
+
+
   </dependencyManagement>
 
 
